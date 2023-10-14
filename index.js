@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
+import bookRoutes from './routes/books.js'
 import bodyParser from 'body-parser'
+import multer from 'multer'
 
 const app = express();
 dotenv.config();
@@ -13,11 +15,15 @@ app.get("/",(req, res) =>{
     res.send("this is ria api")
 })
 
-app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.urlencoded({ extended: true}))
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
+var upload = multer({ dest: './uploads' });
 
 app.use('/user',authRoutes)
+app.use('/book', upload.any(), bookRoutes)
 
 const PORT = process.env.PORT || 5000
 
