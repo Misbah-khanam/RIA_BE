@@ -32,3 +32,11 @@ const DATABASE_URL = process.env.CONNECTION_URL
 mongoose.connect(DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => app.listen(PORT, () => {console.log(`server running on port ${PORT}`)}))
     .catch((err) => console.log(err.message))
+
+// io.on('connection', (socket) => {
+//     console.log('New user connected');
+    
+//     socket.on('disconnect', () => {
+//         console.log('User disconnected');
+//     });
+//     });
