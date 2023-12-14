@@ -74,16 +74,25 @@ export const searchBooks = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
-  export const getFavorites = async (req, res) => {
-    try {
-      const favorites = await books.find({ _id: { $in: req.user.favorites } });
-      // Assuming `req.user.favorites` is an array of book IDs
-      res.status(200).json(favorites);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
+export const getFavorites = async (req, res) => {
+  try {
+    const { bookIds } = req.body;
+
+    // Fetch books from the database based on book IDs
+    const matchingBooks = await books.find({ _id: { $in: bookIds } });
+
+    var imgs = []
+    for(var i=0;i<matchingBooks.length;i++){
+        var base64Image = matchingBooks[i].img.data.toString('base64');
+        imgs.push(base64Image)
     }
-  };
+
+    res.status(200).json({'matchingBooks':matchingBooks,'imgs':imgs});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
   
   export const addFavorite = async (req, res) => {
     try {
