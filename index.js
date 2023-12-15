@@ -10,7 +10,8 @@ import multer from 'multer'
 import {io} from './socket.js';
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://ria-fe.onrender.com/'],
+    // origin: 'http://localhost:3000',
+    origin: 'https://ria-fe.onrender.com',
     optionsSuccessStatus: 200, 
 };
 
