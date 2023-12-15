@@ -36,6 +36,11 @@ app.use('/user',authRoutes)
 app.use('/book', upload.any(), bookRoutes)
 app.use('/message',messageRoutes)
 
+app.get('/*', (request, response) => {
+    response.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+
 // const PORT = process.env.PORT || 5000
 
 const DATABASE_URL = process.env.CONNECTION_URL
