@@ -120,3 +120,68 @@ export const getFavorites = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+
+  export const fetchAddedBooks = async (req, res) => {
+    try {
+      const { seller } = req.body;
+  
+      // Ensure seller is a string
+      const sellerName = String(seller);
+  
+      // Fetch books from the database based on seller_name
+      const addedBooks = await books.find({ seller_name: sellerName });
+  
+      var addedImgs = [];
+      for (var i = 0; i < addedBooks.length; i++) {
+        var base64Image = addedBooks[i].img.data.toString('base64');
+        addedImgs.push(base64Image);
+      }
+  
+      res.status(200).json({ 'addedBooks': addedBooks, 'addedImgs': addedImgs });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+
+  export const deleteBook = async (req, res) => {
+    try {
+      const { bookId } = req.body;
+  
+      // Use findOneAndDelete to find and delete the book
+      const deletedBook = await books.findOneAndDelete({ _id: bookId });
+  
+      if (deletedBook) {
+        // Book found and deleted successfully
+        return res.status(200).json({ success: true, message: 'Book deleted successfully.' });
+      } else {
+        // Book not found
+        return res.status(404).json({ success: false, message: 'Book not found.' });
+      }
+    } catch (error) {
+      console.error('Error deleting book:', error);
+      return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  };
+
+  export const updateBook = async (req, res) => {
+    try {
+      const { bookId, selectedBook } = req.body;
+  
+      // Use findOneAndDelete to find and delete the book
+      const updatedBook = await books.findOneAndUpdate({ _id: bookId },{ $set: selectedBook });
+  
+      if (updatedBook) {
+        // Book found and deleted successfully
+        return res.status(200).json({ success: true, message: 'Book Updated successfully.' });
+      } else {
+        // Book not found
+        return res.status(404).json({ success: false, message: 'Book not found.' });
+      }
+    } catch (error) {
+      console.error('Error in updating book:', error);
+      return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  };
+  
