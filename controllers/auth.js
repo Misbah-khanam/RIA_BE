@@ -39,3 +39,13 @@ export const login = async(req, res) => {
         res.status(500).json("Something went wrong......")
     }
 }
+
+export const fetchAllUsers = async(req, res) => {
+    try{
+        const allUsers = await users.find()
+        res.status(200).json({users: allUsers})
+
+    }catch(error){
+        res.status(500).json("Something went wrong......")
+    }
+}

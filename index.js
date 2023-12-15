@@ -4,12 +4,21 @@ import cors from 'cors';
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
 import bookRoutes from './routes/books.js'
+import messageRoutes from './routes/messages.js'
 import bodyParser from 'body-parser'
 import multer from 'multer'
+import {io} from './socket.js';
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200, 
+};
 
 const app = express();
 dotenv.config();
-app.use(cors());
+app.use(cors(corsOptions));
+
+io.attach(app.listen(5000, () => {console.log(`server running on port ${5000}`)}));
 
 app.get("/",(req, res) =>{
     res.send("this is ria api")
@@ -24,19 +33,12 @@ var upload = multer({ dest: './uploads' });
 
 app.use('/user',authRoutes)
 app.use('/book', upload.any(), bookRoutes)
+app.use('/message',messageRoutes)
 
-const PORT = process.env.PORT || 5000
+// const PORT = process.env.PORT || 5000
 
 const DATABASE_URL = process.env.CONNECTION_URL
 
 mongoose.connect(DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => app.listen(PORT, () => {console.log(`server running on port ${PORT}`)}))
+    .then(() =>  {console.log("connected to mongodb")})
     .catch((err) => console.log(err.message))
-
-// io.on('connection', (socket) => {
-//     console.log('New user connected');
-    
-//     socket.on('disconnect', () => {
-//         console.log('User disconnected');
-//     });
-//     });
