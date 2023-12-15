@@ -10,7 +10,8 @@ import multer from 'multer'
 import {io} from './socket.js';
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
+    origin: 'https://ria-fe.onrender.com',
     optionsSuccessStatus: 200, 
 };
 
@@ -34,6 +35,11 @@ var upload = multer({ dest: './uploads' });
 app.use('/user',authRoutes)
 app.use('/book', upload.any(), bookRoutes)
 app.use('/message',messageRoutes)
+
+app.get('/*', (request, response) => {
+    response.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 
 // const PORT = process.env.PORT || 5000
 
