@@ -30,8 +30,8 @@ io.on('connection', (socket) => {
         const transporter = nodemailer.createTransport({
             service : 'gmail',
             auth : {
-                user : '513215c@gmail.com',
-                pass : 'bqyu vmau acfe bqsc'
+                user : process.env.EMAIL_USER,
+                pass : process.env.EMAIL_PASS
             }
         })
 
