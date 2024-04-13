@@ -167,10 +167,10 @@ export const getFavorites = async (req, res) => {
 
   export const updateBook = async (req, res) => {
     try {
-      const { bookId, selectedBook } = req.body;
+      const { bookId, bookName, bookAuthor, bookActualPrice, bookSellingPrice, bookStatus } = req.body;
   
       // Use findOneAndDelete to find and delete the book
-      const updatedBook = await books.findOneAndUpdate({ _id: bookId },{ $set: selectedBook });
+      const updatedBook = await books.findOneAndUpdate({ _id: bookId },{ $set: {boo_name:bookName, author:bookAuthor, actual_price:bookActualPrice, selling_price:bookSellingPrice, status:bookStatus} });
   
       if (updatedBook) {
         // Book found and deleted successfully
