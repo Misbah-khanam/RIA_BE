@@ -108,31 +108,33 @@ export const getFavorites = async (req, res) => {
 };
   
   export const addFavorite = async (req, res) => {
-    try {
-      const { bookId, user } = req.body;
-      // Assuming `req.user._id` is the ID of the authenticated user
-      console.log(user._id);
-      await users.findByIdAndUpdate(user._id, { $addToSet: { favorites: bookId } });
-      const user_ret = await users.findOne({_id: user._id })
-      res.status(200).json({ message: 'Book added to favorites', user: user_ret  });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
-  
-  export const removeFavorite = async (req, res) => {
-    try {
-      const { bookId, user } = req.body;
-      // Assuming `req.user._id` is the ID of the authenticated user
-      await users.findByIdAndUpdate(user._id, { $pull: { favorites: bookId } });
-      const user_ret = await users.findOne({_id: user._id })
-      res.status(200).json({ message: 'Book removed from favorites', user: user_ret });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
+  try {
+    const { bookId, userId } = req.body;
+    // Assuming `req.user._id` is the ID of the authenticated user
+    // const userId = req.user._id;
+    await users.findByIdAndUpdate(userId, { $addToSet: { favorites: bookId } });
+    const user_ret = await users.findOne({ _id: userId });
+    res.status(200).json({ message: 'Book added to favorites', user: user_ret });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const removeFavorite = async (req, res) => {
+  try {
+    const { bookId, userId } = req.body;
+    // Assuming `req.user._id` is the ID of the authenticated user
+    // const userId = req.user._id;
+    await users.findByIdAndUpdate(userId, { $pull: { favorites: bookId } });
+    const user_ret = await users.findOne({ _id: userId });
+    res.status(200).json({ message: 'Book removed from favorites', user: user_ret });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 
   export const fetchAddedBooks = async (req, res) => {
     try {
@@ -180,10 +182,10 @@ export const getFavorites = async (req, res) => {
 
   export const updateBook = async (req, res) => {
     try {
-      const { bookId, bookName, bookAuthor, bookActualPrice, bookSellingPrice, bookStatus } = req.body;
+      const { bookId, bookName, bookAuthor, bookActualPrice, bookSellingPrice, bookStatus, category } = req.body;
   
       // Use findOneAndDelete to find and delete the book
-      const updatedBook = await books.findOneAndUpdate({ _id: bookId },{ $set: {boo_name:bookName, author:bookAuthor, actual_price:bookActualPrice, selling_price:bookSellingPrice, status:bookStatus} });
+      const updatedBook = await books.findOneAndUpdate({ _id: bookId },{ $set: {boo_name:bookName, author:bookAuthor, actual_price:bookActualPrice, selling_price:bookSellingPrice, status:bookStatus, category:category} });
   
       if (updatedBook) {
         // Book found and deleted successfully
