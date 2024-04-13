@@ -3,10 +3,10 @@ import { readFileSync } from 'fs'
 import users from '../models/user.js'
 
 export const addBook = async(req, res) => {
-    const{book_name,author,seller_name,seller_phone,seller_email,seller_state,seller_district,actual_price,selling_price,status} =  req.body
+    const{book_name,author,seller_name,seller_phone,seller_email,seller_state,seller_district,actual_price,selling_price,status, category} =  req.body
     try{
         const newBook = await books.create({
-            book_name,author,seller_name,seller_phone,seller_email,seller_state,seller_district,actual_price,selling_price,status
+            book_name,author,seller_name,seller_phone,seller_email,seller_state,seller_district,actual_price,selling_price,status, category
         })
         newBook.img.data = readFileSync(req.files[0].path)
         newBook.img.contentType = 'image/png';
@@ -49,31 +49,44 @@ export const retBooksDonated = async(req, res) => {
 }
 
 export const searchBooks = async (req, res) => {
-    try {
+  try {
       const { searchTerm } = req.body;
-  
+
       if (!searchTerm) {
-        const searchResults = await books.find({
-            status:"sell"
-        });
+          const searchResults = await books.find({ status: "sell" });
+          // If no searchTerm provided, return all books with status "sell"
+          var imgs = [];
+          for (var i = 0; i < searchResults.length; i++) {
+              var base64Image = searchResults[i].img.data.toString('base64');
+              imgs.push(base64Image);
+          }
+          return res.status(200).json({ books: searchResults, img: imgs });
       }
-  
-      // Adjusted $regex pattern to make the search less restrictive
+
+      // Search by book name, author name, and category
       const searchResults = await books.find({
-        book_name: { $regex: `.*${searchTerm}.*`, $options: 'i' },
-        status:"sell"
+          $or: [
+              { book_name: { $regex: `.*${searchTerm}.*`, $options: 'i' } },
+              { author_name: { $regex: `.*${searchTerm}.*`, $options: 'i' } },
+              { category: { $regex: `.*${searchTerm}.*`, $options: 'i' } }
+          ],
+          status: "sell"
       });
-      var imgs = []
-      for(var i=0;i<searchResults.length;i++){
-        var base64Image = searchResults[i].img.data.toString('base64');
-        imgs.push(base64Image)
+      
+      var imgs = [];
+      for (var i = 0; i < searchResults.length; i++) {
+          var base64Image = searchResults[i].img.data.toString('base64');
+          imgs.push(base64Image);
       }
+      
       res.status(200).json({ books: searchResults, img: imgs });
-    } catch (error) {
+  } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
+  }
+};
+
+
 export const getFavorites = async (req, res) => {
   try {
     const { bookIds } = req.body;

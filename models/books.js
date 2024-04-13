@@ -11,6 +11,7 @@ const bookSchema = mongoose.Schema({
     actual_price : {type: String, required: true},
     selling_price : {type: String, required: true},
     status : {type: String, required: true},
+    category : {type: String, required: true},
     postedOn: {type:Date, default: Date.now},
     img: { 
         data: Buffer, 
