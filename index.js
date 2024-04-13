@@ -32,7 +32,7 @@ app.use(bodyParser.json())
 
 var upload = multer({ dest: './uploads' });
 
-app.use('/user',authRoutes)
+app.use('/user', upload.any(), authRoutes)
 app.use('/book', upload.any(), bookRoutes)
 app.use('/message',messageRoutes)
 
